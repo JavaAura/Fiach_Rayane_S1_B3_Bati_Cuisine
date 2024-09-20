@@ -7,11 +7,11 @@ public class Customer {
     private boolean isProfessional;
 
 
-    public Customer(String name, String address, String phone, String isProfessional) {
+    public Customer(String name, String address, String phone, Boolean isProfessional) {
         this.name = name;
         this.phone = address;
         this.address = phone;
-        this.isProfessional = isProfessional.isEmpty();
+        this.isProfessional = isProfessional;
     }
 
     public String getName() {
