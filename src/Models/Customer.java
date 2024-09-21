@@ -7,7 +7,7 @@ public class Customer {
     private boolean isProfessional;
 
 
-    public Customer(String name, String address, String phone, Boolean isProfessional) {
+    public Customer(String name, String address, String phone, boolean isProfessional) {
         this.name = name;
         this.phone = address;
         this.address = phone;

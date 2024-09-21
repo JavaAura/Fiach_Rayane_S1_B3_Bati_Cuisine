@@ -1,16 +1,19 @@
 import Config.DbConnection;
+import Ui.MainMenu;
 
 import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
         try {
+            MainMenu mainMenu = new MainMenu();
+            mainMenu.mainMenu();
             DbConnection db = DbConnection.getInstance();
             System.out.println("Database connection established.");
 
-            // Start the console interface
         } catch (SQLException e) {
             System.err.println("Failed to establish database connection: " + e.getMessage());
         }
+
     }
 }

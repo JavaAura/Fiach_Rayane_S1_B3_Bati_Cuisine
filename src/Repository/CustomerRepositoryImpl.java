@@ -8,10 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerRepositoryInpl implements CustomerRepository {
+public class CustomerRepositoryImpl implements CustomerRepository {
     private Connection connection;
 
-    public void CustomerRepositoryImpl() {
+    public CustomerRepositoryImpl() {
         try {
             this.connection = DbConnection.getInstance().getConnection();
         } catch (SQLException e) {
@@ -21,7 +21,7 @@ public class CustomerRepositoryInpl implements CustomerRepository {
 
     @Override
     public void addCustomer(Customer customer) {
-        String query = "INSERT INTO customers (name, address, phone, isProfessional) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO customer (name, address, phone, isProfessional) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, customer.getName());
             stmt.setString(2, customer.getAddress());
@@ -35,7 +35,7 @@ public class CustomerRepositoryInpl implements CustomerRepository {
 
     @Override
     public Customer getCustomerById(int id) {
-        String query = "SELECT * FROM customers WHERE id = ?";
+        String query = "SELECT * FROM customer WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -56,7 +56,7 @@ public class CustomerRepositoryInpl implements CustomerRepository {
     @Override
     public List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
-        String query = "SELECT * FROM customers";
+        String query = "SELECT * FROM customer";
         try (Statement stmt = connection.createStatement()) {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
