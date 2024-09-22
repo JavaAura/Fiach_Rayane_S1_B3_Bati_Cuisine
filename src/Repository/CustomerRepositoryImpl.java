@@ -41,6 +41,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new Customer(
+                        rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("address"),
                         rs.getString("phone"),
@@ -61,6 +62,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 customers.add(new Customer(
+                        rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("address"),
                         rs.getString("phone"),

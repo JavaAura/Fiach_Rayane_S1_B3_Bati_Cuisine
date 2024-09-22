@@ -1,121 +1,207 @@
 package Ui;
 
 import Models.Customer;
+import Models.Project;
+import Models.Labor;
+import Models.Material;
 import Services.CustomerServiceImpl;
+import Services.ProjectServiceImpl;
+import Enum.Status;
+
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainMenu {
     private CustomerServiceImpl customerService;
+    private ProjectServiceImpl projectService;
+    private static final Logger logger = Logger.getLogger(MainMenu.class.getName());
 
     public MainMenu() {
-        this.customerService = new CustomerServiceImpl(); // Initialize customerService
+        this.customerService = new CustomerServiceImpl();
+        this.projectService = new ProjectServiceImpl();
     }
 
     public void mainMenu() {
         Scanner prompt = new Scanner(System.in);
         while (true) {
-            System.out.println("=== Main Menu ===");
-            System.out.println("1. Create a new project");
-            System.out.println("2. Display existing projects");
-            System.out.println("3. Calculate project cost");
-            System.out.println("4. Exit");
-            System.out.print("Choose an option: ");
+            System.out.println("=== Menu Principal ===");
+            System.out.println("1. Créer un nouveau projet");
+            System.out.println("2. Afficher les projets existants");
+            System.out.println("3. Calculer le coût d'un projet");
+            System.out.println("4. Quitter");
+            System.out.print("Choisissez une option : ");
+
             int option = prompt.nextInt();
             prompt.nextLine();
 
             switch (option) {
                 case 1:
-                    createProject(prompt);
+                    createNewProject(prompt);
                     break;
                 case 2:
-                    // Display existing projects
+                    displayProjects();
                     break;
                 case 3:
-                    // Calculate project cost
+                    System.out.println("Fonctionnalité non implémentée.");
                     break;
                 case 4:
-                    System.exit(0);
-                    break;
+                    logger.info("Application terminated by user.");
+                    System.out.println("Au revoir!");
+                    return;
                 default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
+                    logger.warning("Invalid option selected: " + option);
+                    System.out.println("Option invalide, veuillez réessayer.");
             }
         }
     }
 
-    private void createProject(Scanner prompt) {
-        System.out.println("--- Client Search ---");
-        System.out.println("Do you want to search for an existing client or add a new one?");
-        System.out.println("1. Search for an existing client");
-        System.out.println("2. Add a new client");
-        System.out.print("Choose an option: ");
-        int option = prompt.nextInt();
-        prompt.nextLine();
+    private void createNewProject(Scanner prompt) {
+        System.out.println("--- Recherche de client ---");
+        System.out.println("Souhaitez-vous chercher un client existant ou en ajouter un nouveau ?");
+        System.out.println("1. Chercher un client existant");
+        System.out.println("2. Ajouter un nouveau client");
+        System.out.print("Choisissez une option : ");
 
-        switch (option) {
-            case 1:
-                searchExistingClient(prompt);
-                break;
-            case 2:
-                addNewClient(prompt);
-                break;
-            default:
-                System.out.println("Invalid option. Please try again.");
-                break;
+        int choice = prompt.nextInt();
+        prompt.nextLine();
+        Customer selectedCustomer = null;
+
+        if (choice == 1) {
+            selectedCustomer = searchExistingCustomer(prompt);
+        } else if (choice == 2) {
+            selectedCustomer = addNewCustomer(prompt);
+        } else {
+            logger.warning("Invalid option for customer selection: " + choice);
+            System.out.println("Option invalide.");
+            return;
+        }
+
+        if (selectedCustomer != null) {
+            System.out.println("--- Création d'un Nouveau Projet ---");
+            System.out.print("Entrez le nom du projet : ");
+            String projectName = prompt.nextLine();
+
+            Project project = new Project(projectName, 0, 0, Status.ONGOING, selectedCustomer.getId());
+            addMaterialsAndLabor(prompt, project);
+
+            logger.info("New project created: " + projectName + " for customer: " + selectedCustomer.getName());
         }
     }
 
-    private void searchExistingClient(Scanner prompt) {
-        System.out.println("--- Search for Existing Client ---");
-        System.out.print("Enter the client's name: ");
-        String clientName = prompt.nextLine();
+    private Customer searchExistingCustomer(Scanner prompt) {
+        System.out.print("Entrez le nom du client : ");
+        String customerName = prompt.nextLine();
         List<Customer> customers = customerService.getAllCustomers();
-        Customer foundCustomer = null;
 
         for (Customer customer : customers) {
-            if (customer.getName().equalsIgnoreCase(clientName)) {
-                foundCustomer = customer;
+            if (customer.getName().equalsIgnoreCase(customerName)) {
+                System.out.println("Client trouvé !");
+                System.out.println("Nom : " + customer.getName());
+                System.out.println("Adresse : " + customer.getAddress());
+                System.out.println("Numéro de téléphone : " + customer.getPhone());
+                System.out.print("Souhaitez-vous continuer avec ce client ? (y/n) : ");
+                if (prompt.nextLine().equalsIgnoreCase("y")) {
+                    logger.info("Existing customer selected: " + customer.getName());
+                    return customer;
+                }
+            }
+        }
+        logger.warning("Customer not found: " + customerName);
+        System.out.println("Client non trouvé.");
+        return null;
+    }
+
+    private Customer addNewCustomer(Scanner prompt) {
+        System.out.print("Entrez le nom du client : ");
+        String name = prompt.nextLine();
+        System.out.print("Entrez l'adresse du client : ");
+        String address = prompt.nextLine();
+        System.out.print("Entrez le numéro de téléphone du client : ");
+        String phone = prompt.nextLine();
+        System.out.print("Le client est-il professionnel ? (true/false) : ");
+        boolean isProfessional = prompt.nextBoolean();
+        prompt.nextLine(); // Clear the buffer
+
+        Customer newCustomer = new Customer(0, name, address, phone, isProfessional);
+        customerService.addCustomer(newCustomer);
+        logger.info("New customer added: " + name);
+        System.out.println("Client ajouté avec succès !");
+        return newCustomer;
+    }
+
+    private void addMaterialsAndLabor(Scanner prompt, Project project) {
+        double totalCost = 0.0;
+
+        while (true) {
+            System.out.println("--- Ajout des matériaux ---");
+            System.out.print("Entrez le nom du matériau : ");
+            String materialName = prompt.nextLine();
+            System.out.println("Entrez le taux de TVA du matériau : ");
+            double vatRate = prompt.nextDouble();
+            System.out.print("Entrez la quantité de ce matériau : ");
+            double quantity = prompt.nextDouble();
+            System.out.print("Entrez le coût unitaire de ce matériau : ");
+            double unitCost = prompt.nextDouble();
+            System.out.print("Entrez le coût de transport de ce matériau : ");
+            double transportCost = prompt.nextDouble();
+            System.out.print("Entrez le coefficient de qualité du matériau : ");
+            double qualityCoefficient = prompt.nextDouble();
+            prompt.nextLine();
+
+            Material material = new Material(materialName, vatRate, quantity, unitCost, transportCost, qualityCoefficient);
+            totalCost += material.getTotalCost();
+
+            logger.info("Material added: " + materialName + " | Total cost: " + totalCost);
+
+            System.out.print("Voulez-vous ajouter un autre matériau ? (y/n) : ");
+            if (!prompt.nextLine().equalsIgnoreCase("y")) {
                 break;
             }
         }
 
-        if (foundCustomer != null) {
-            System.out.println("Client found!");
-            System.out.println("Name: " + foundCustomer.getName());
-            System.out.println("Address: " + foundCustomer.getAddress());
-            System.out.println("Phone number: " + foundCustomer.getPhone());
-            System.out.print("Do you want to continue with this client? (y/n): ");
-            String continueWithClient = prompt.nextLine();
-            if (continueWithClient.equalsIgnoreCase("y")) {
-                // Continue with the found customer
-            } else {
-                // Handle the case where the user does not want to continue with the found customer
+        while (true) {
+            System.out.println("--- Ajout de la main-d'œuvre ---");
+            System.out.print("Entrez le type de main-d'œuvre : ");
+            String laborType = prompt.nextLine();
+            System.out.println("Entrez le taux de TVA du matériau : ");
+            double vatRate = prompt.nextDouble();
+            System.out.print("Entrez le taux horaire de cette main-d'œuvre : ");
+            double hourlyRate = prompt.nextDouble();
+            System.out.print("Entrez le nombre d'heures travaillées : ");
+            int hoursWorked = prompt.nextInt();
+            System.out.print("Entrez le facteur de productivité : ");
+            double productivityFactor = prompt.nextDouble();
+            prompt.nextLine();
+
+            Labor labor = new Labor(laborType, vatRate, hourlyRate, hoursWorked, productivityFactor);
+            totalCost += labor.getTotalCost();
+
+            logger.info("Labor added: " + laborType + " | Total cost: " + totalCost);
+
+            System.out.print("Voulez-vous ajouter un autre type de main-d'œuvre ? (y/n) : ");
+            if (!prompt.nextLine().equalsIgnoreCase("y")) {
+                break;
             }
-        } else {
-            System.out.println("Client not found.");
         }
+
+        project.setTotalCost(totalCost);
+        projectService.addProject(project);
+
+        System.out.println("Projet ajouté avec succès avec le coût total : " + totalCost);
     }
 
-    private void addNewClient(Scanner prompt) {
-        System.out.println("--- Add a New Client ---");
-        System.out.print("Enter the client's name: ");
-        String name = prompt.nextLine();
-        System.out.print("Enter the client's address: ");
-        String address = prompt.nextLine();
-        System.out.print("Enter the client's phone number: ");
-        String phone = prompt.nextLine();
-        System.out.print("Is the client a professional? (true/false): ");
-        String isProfessionalInput = prompt.nextLine();
-        boolean isProfessional = Boolean.parseBoolean(isProfessionalInput);
-
-        Customer newCustomer = new Customer(name, address, phone, isProfessional);
-        newCustomer.setName(name);
-        newCustomer.setAddress(address);
-        newCustomer.setPhone(phone);
-        newCustomer.setProfessional(isProfessional);
-
-        customerService.addCustomer(newCustomer);
-        System.out.println("New client added successfully!");
+    private void displayProjects() {
+        List<Project> projects = projectService.getAllProjects();
+        if (projects.isEmpty()) {
+            System.out.println("Aucun projet trouvé.");
+            return;
+        }
+        System.out.println("--- Projets existants ---");
+        for (Project project : projects) {
+            System.out.println(project);
+        }
+        logger.info("Displayed all projects.");
     }
 }

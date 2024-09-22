@@ -1,18 +1,22 @@
 package Models;
 
 public class Customer {
+    private int id;
     private String name;
     private String address;
     private String phone;
     private boolean isProfessional;
 
 
-    public Customer(String name, String address, String phone, boolean isProfessional) {
+    public Customer(int id, String name, String address, String phone, boolean isProfessional) {
+        this.id = id;
         this.name = name;
-        this.phone = address;
-        this.address = phone;
+        this.phone = phone;
+        this.address = address;
         this.isProfessional = isProfessional;
     }
+
+    public int getId() {return id;}
 
     public String getName() {
         return name;
@@ -50,6 +54,7 @@ public class Customer {
     @Override
     public String toString() {
         return "Customer{" +
+                "id=" + id +
                 "name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +

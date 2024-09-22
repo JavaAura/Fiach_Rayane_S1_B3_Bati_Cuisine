@@ -8,15 +8,13 @@ public class Project {
     private double totalCost;
     private Status projectStatus;
     private int customerId;
-    private int componentId;
 
-    public Project(String projectName, double profitMargin, double totalCost, Status projectStatus, int customerId, int componentId) {
+    public Project(String projectName, double profitMargin, double totalCost, Status projectStatus, int customerId) {
         this.projectName = projectName;
         this.profitMargin = profitMargin;
         this.totalCost = totalCost;
         this.projectStatus = projectStatus;
         this.customerId = customerId;
-        this.componentId = componentId;
     }
 
     public String getProjectName() {
@@ -59,13 +57,7 @@ public class Project {
         this.customerId = customerId;
     }
 
-    public int getComponentId() {
-        return componentId;
-    }
 
-    public void setComponentId(int componentId) {
-        this.componentId = componentId;
-    }
 
     @Override
     public String toString() {
@@ -75,7 +67,6 @@ public class Project {
                 ", totalCost=" + totalCost +
                 ", projectStatus=" + projectStatus +
                 ", customerId=" + customerId +
-                ", componentId=" + componentId +
                 '}';
     }
 
