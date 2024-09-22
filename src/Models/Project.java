@@ -3,18 +3,28 @@ package Models;
 import Enum.Status;
 
 public class Project {
+    private int id;
     private String projectName;
     private double profitMargin;
     private double totalCost;
     private Status projectStatus;
     private int customerId;
 
-    public Project(String projectName, double profitMargin, double totalCost, Status projectStatus, int customerId) {
+    public Project(int id, String projectName, double profitMargin, double totalCost, Status projectStatus, int customerId) {
+        this.id = id;
         this.projectName = projectName;
         this.profitMargin = profitMargin;
         this.totalCost = totalCost;
         this.projectStatus = projectStatus;
         this.customerId = customerId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getProjectName() {

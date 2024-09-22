@@ -22,7 +22,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public void addProject(Project project) {
-        String query = "INSERT INTO project (projectName, profitMargin, totalCost, projectStatus, customerId) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO project (projectName, profitMargin, totalCost, projectStatus, customerId) VALUES (?, ?, ?, ?::status, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, project.getProjectName());
             stmt.setDouble(2, project.getProfitMargin());
@@ -43,6 +43,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 projects.add(new Project(
+                        rs.getInt("id"),
                         rs.getString("projectName"),
                         rs.getDouble("profitMargin"),
                         rs.getDouble("totalCost"),
@@ -58,7 +59,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public Project getProjectById(int id) {
-        // Implement if needed
         return null;
     }
 }

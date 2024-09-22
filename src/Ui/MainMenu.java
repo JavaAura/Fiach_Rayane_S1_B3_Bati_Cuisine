@@ -5,22 +5,27 @@ import Models.Project;
 import Models.Labor;
 import Models.Material;
 import Services.CustomerServiceImpl;
+import Services.LaborServiceImpl;
+import Services.MaterialServiceImpl;
 import Services.ProjectServiceImpl;
 import Enum.Status;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainMenu {
     private CustomerServiceImpl customerService;
     private ProjectServiceImpl projectService;
+    private MaterialServiceImpl materialService;
+    private LaborServiceImpl laborService;
     private static final Logger logger = Logger.getLogger(MainMenu.class.getName());
 
     public MainMenu() {
         this.customerService = new CustomerServiceImpl();
         this.projectService = new ProjectServiceImpl();
+        this.materialService = new MaterialServiceImpl();
+        this.laborService = new LaborServiceImpl();
     }
 
     public void mainMenu() {
@@ -83,7 +88,8 @@ public class MainMenu {
             System.out.print("Entrez le nom du projet : ");
             String projectName = prompt.nextLine();
 
-            Project project = new Project(projectName, 0, 0, Status.ONGOING, selectedCustomer.getId());
+            Project project = new Project(0, projectName, 0, 0, Status.ONGOING, selectedCustomer.getId());
+            projectService.addProject(project);
             addMaterialsAndLabor(prompt, project);
 
             logger.info("New project created: " + projectName + " for customer: " + selectedCustomer.getName());
@@ -122,7 +128,7 @@ public class MainMenu {
         String phone = prompt.nextLine();
         System.out.print("Le client est-il professionnel ? (true/false) : ");
         boolean isProfessional = prompt.nextBoolean();
-        prompt.nextLine(); // Clear the buffer
+        prompt.nextLine();
 
         Customer newCustomer = new Customer(0, name, address, phone, isProfessional);
         customerService.addCustomer(newCustomer);
@@ -133,6 +139,9 @@ public class MainMenu {
 
     private void addMaterialsAndLabor(Scanner prompt, Project project) {
         double totalCost = 0.0;
+
+        int projectId = project.getId();
+
 
         while (true) {
             System.out.println("--- Ajout des matériaux ---");
@@ -150,7 +159,8 @@ public class MainMenu {
             double qualityCoefficient = prompt.nextDouble();
             prompt.nextLine();
 
-            Material material = new Material(materialName, vatRate, quantity, unitCost, transportCost, qualityCoefficient);
+            Material material = new Material(materialName, vatRate, projectId, quantity, unitCost, transportCost, qualityCoefficient);
+            materialService.addMaterial(material);
             totalCost += material.getTotalCost();
 
             logger.info("Material added: " + materialName + " | Total cost: " + totalCost);
@@ -175,7 +185,8 @@ public class MainMenu {
             double productivityFactor = prompt.nextDouble();
             prompt.nextLine();
 
-            Labor labor = new Labor(laborType, vatRate, hourlyRate, hoursWorked, productivityFactor);
+            Labor labor = new Labor(laborType, vatRate, projectId, hourlyRate, hoursWorked, productivityFactor);
+            laborService.addLabor(labor);
             totalCost += labor.getTotalCost();
 
             logger.info("Labor added: " + laborType + " | Total cost: " + totalCost);
