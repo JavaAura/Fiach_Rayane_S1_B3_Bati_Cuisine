@@ -185,8 +185,21 @@ public class MainMenu {
 
         project.setTotalCost(totalCost);
 
-        System.out.println("Projet ajouté avec succès avec le coût total : " + totalCost);
-    }
+        String marginStr = Validator.validateInput("Souhaitez-vous ajouter une marge bénéficiaire ? (y/n) : ", InputType.STRING);
+        if (marginStr.equalsIgnoreCase("y")) {
+            String profitMarginStr = Validator.validateInput("Entrez le pourcentage de marge bénéficiaire : ", InputType.DOUBLE);
+            double profitMargin = Double.parseDouble(profitMarginStr);
+            project.setProfitMargin(profitMargin);
+
+            double finalCost = totalCost + (totalCost * (profitMargin / 100));
+            project.setTotalCost(finalCost);
+            System.out.println("Coût total final avec marge bénéficiaire : " + finalCost);
+        } else {
+            System.out.println("Projet ajouté avec succès avec le coût total : " + totalCost);
+        }
+
+        projectService.updateProject(project);
+        logger.info("Project updated: " + project.getProjectName());    }
 
     private void displayProjects() {
         List<Project> projects = projectService.getAllProjects();

@@ -46,6 +46,21 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
+    public void updateProject(Project project) {
+        String query = "UPDATE project SET projectName = ?, profitMargin = ?, totalCost = ?, projectStatus = ?::status WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, project.getProjectName());
+            stmt.setDouble(2, project.getProfitMargin());
+            stmt.setDouble(3, project.getTotalCost());
+            stmt.setString(4, project.getProjectStatus().name());
+            stmt.setInt(5, project.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
         String query = "SELECT * FROM project";

@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 public class Validator {
 
-    // Utility validation methods (No need to print error messages here)
 
     public static boolean isEmpty(String str) {
         return str.isEmpty();
@@ -56,7 +55,6 @@ public class Validator {
         return isValidInput;
     }
 
-    // Only handle the error display in this method
     public static String validateInput(String prompt, InputType type, int... range) {
         String input;
         do {
@@ -64,7 +62,6 @@ public class Validator {
             Scanner scanner = new Scanner(System.in);
             input = scanner.nextLine();
 
-            // Print error if invalid
             if (!isValidInput(input, type, range)) {
                 System.out.println("\nERROR: Invalid input. Please try again.\n");
             }

@@ -20,6 +20,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public void updateProject(Project project) {
+        projectRepository.updateProject(project);
+    }
+
+    @Override
     public List<Project> getAllProjects() {
         return projectRepository.getAllProjects();
     }
