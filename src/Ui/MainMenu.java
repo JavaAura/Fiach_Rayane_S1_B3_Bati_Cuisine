@@ -9,6 +9,8 @@ import Services.LaborServiceImpl;
 import Services.MaterialServiceImpl;
 import Services.ProjectServiceImpl;
 import Enum.Status;
+import Utils.Validator;
+import Utils.Enums.InputType;
 
 import java.util.List;
 import java.util.Scanner;
@@ -36,12 +38,10 @@ public class MainMenu {
             System.out.println("2. Afficher les projets existants");
             System.out.println("3. Calculer le coût d'un projet");
             System.out.println("4. Quitter");
-            System.out.print("Choisissez une option : ");
 
-            int option = prompt.nextInt();
-            prompt.nextLine();
+            String option = Validator.validateInput("Choisissez une option : ", InputType.OPTION, 1, 4);
 
-            switch (option) {
+            switch (Integer.parseInt(option)) {
                 case 1:
                     createNewProject(prompt);
                     break;
@@ -67,15 +67,13 @@ public class MainMenu {
         System.out.println("Souhaitez-vous chercher un client existant ou en ajouter un nouveau ?");
         System.out.println("1. Chercher un client existant");
         System.out.println("2. Ajouter un nouveau client");
-        System.out.print("Choisissez une option : ");
+        String choice = Validator.validateInput("Choisissez une option : ", InputType.OPTION, 1, 2);
 
-        int choice = prompt.nextInt();
-        prompt.nextLine();
         Customer selectedCustomer = null;
 
-        if (choice == 1) {
+        if (choice.equals("1")) {
             selectedCustomer = searchExistingCustomer(prompt);
-        } else if (choice == 2) {
+        } else if (choice.equals("2")) {
             selectedCustomer = addNewCustomer(prompt);
         } else {
             logger.warning("Invalid option for customer selection: " + choice);
@@ -85,8 +83,7 @@ public class MainMenu {
 
         if (selectedCustomer != null) {
             System.out.println("--- Création d'un Nouveau Projet ---");
-            System.out.print("Entrez le nom du projet : ");
-            String projectName = prompt.nextLine();
+            String projectName = Validator.validateInput("Entrez le nom du projet : ", InputType.STRING);
             Project project = new Project(projectName, 0, 0, Status.ONGOING, selectedCustomer.getId());
             projectService.addProject(project);
             addMaterialsAndLabor(prompt, project);
@@ -96,8 +93,7 @@ public class MainMenu {
     }
 
     private Customer searchExistingCustomer(Scanner prompt) {
-        System.out.print("Entrez le nom du client : ");
-        String customerName = prompt.nextLine();
+        String customerName = Validator.validateInput("Entrez le nom du client : ", InputType.STRING);
         List<Customer> customers = customerService.getAllCustomers();
 
         for (Customer customer : customers) {
@@ -106,8 +102,8 @@ public class MainMenu {
                 System.out.println("Nom : " + customer.getName());
                 System.out.println("Adresse : " + customer.getAddress());
                 System.out.println("Numéro de téléphone : " + customer.getPhone());
-                System.out.print("Souhaitez-vous continuer avec ce client ? (y/n) : ");
-                if (prompt.nextLine().equalsIgnoreCase("y")) {
+                String confirm = Validator.validateInput("Souhaitez-vous continuer avec ce client ? (y/n) : ", InputType.STRING);
+                if (confirm.equalsIgnoreCase("y")) {
                     logger.info("Existing customer selected: " + customer.getName());
                     return customer;
                 }
@@ -119,15 +115,11 @@ public class MainMenu {
     }
 
     private Customer addNewCustomer(Scanner prompt) {
-        System.out.print("Entrez le nom du client : ");
-        String name = prompt.nextLine();
-        System.out.print("Entrez l'adresse du client : ");
-        String address = prompt.nextLine();
-        System.out.print("Entrez le numéro de téléphone du client : ");
-        String phone = prompt.nextLine();
-        System.out.print("Le client est-il professionnel ? (true/false) : ");
-        boolean isProfessional = prompt.nextBoolean();
-        prompt.nextLine();
+        String name = Validator.validateInput("Entrez le nom du client : ", InputType.STRING);
+        String address = Validator.validateInput("Entrez l'adresse du client : ", InputType.STRING);
+        String phone = Validator.validateInput("Entrez le numéro de téléphone du client : ", InputType.STRING);
+        String isProfessionalStr = Validator.validateInput("Le client est-il professionnel ? (true/false) : ", InputType.STRING);
+        boolean isProfessional = Boolean.parseBoolean(isProfessionalStr);
 
         Customer newCustomer = new Customer(name, address, phone, isProfessional);
         customerService.addCustomer(newCustomer);
@@ -141,22 +133,19 @@ public class MainMenu {
 
         int projectId = project.getId();
 
-
         while (true) {
             System.out.println("--- Ajout des matériaux ---");
-            System.out.print("Entrez le nom du matériau : ");
-            String materialName = prompt.nextLine();
-            System.out.println("Entrez le taux de TVA du matériau : ");
-            double vatRate = prompt.nextDouble();
-            System.out.print("Entrez la quantité de ce matériau : ");
-            double quantity = prompt.nextDouble();
-            System.out.print("Entrez le coût unitaire de ce matériau : ");
-            double unitCost = prompt.nextDouble();
-            System.out.print("Entrez le coût de transport de ce matériau : ");
-            double transportCost = prompt.nextDouble();
-            System.out.print("Entrez le coefficient de qualité du matériau : ");
-            double qualityCoefficient = prompt.nextDouble();
-            prompt.nextLine();
+            String materialName = Validator.validateInput("Entrez le nom du matériau : ", InputType.STRING);
+            String vatRateStr = Validator.validateInput("Entrez le taux de TVA du matériau : ", InputType.DOUBLE);
+            double vatRate = Double.parseDouble(vatRateStr);
+            String quantityStr = Validator.validateInput("Entrez la quantité de ce matériau : ", InputType.DOUBLE);
+            double quantity = Double.parseDouble(quantityStr);
+            String unitCostStr = Validator.validateInput("Entrez le coût unitaire de ce matériau : ", InputType.DOUBLE);
+            double unitCost = Double.parseDouble(unitCostStr);
+            String transportCostStr = Validator.validateInput("Entrez le coût de transport de ce matériau : ", InputType.DOUBLE);
+            double transportCost = Double.parseDouble(transportCostStr);
+            String qualityCoefficientStr = Validator.validateInput("Entrez le coefficient de qualité du matériau : ", InputType.DOUBLE);
+            double qualityCoefficient = Double.parseDouble(qualityCoefficientStr);
 
             Material material = new Material(materialName, vatRate, projectId, quantity, unitCost, transportCost, qualityCoefficient);
             materialService.addMaterial(material);
@@ -164,25 +153,23 @@ public class MainMenu {
 
             logger.info("Material added: " + materialName + " | Total cost: " + totalCost);
 
-            System.out.print("Voulez-vous ajouter un autre matériau ? (y/n) : ");
-            if (!prompt.nextLine().equalsIgnoreCase("y")) {
+            String addMore = Validator.validateInput("Voulez-vous ajouter un autre matériau ? (y/n) : ", InputType.STRING);
+            if (!addMore.equalsIgnoreCase("y")) {
                 break;
             }
         }
 
         while (true) {
             System.out.println("--- Ajout de la main-d'œuvre ---");
-            System.out.print("Entrez le type de main-d'œuvre : ");
-            String laborType = prompt.nextLine();
-            System.out.println("Entrez le taux de TVA du matériau : ");
-            double vatRate = prompt.nextDouble();
-            System.out.print("Entrez le taux horaire de cette main-d'œuvre : ");
-            double hourlyRate = prompt.nextDouble();
-            System.out.print("Entrez le nombre d'heures travaillées : ");
-            int hoursWorked = prompt.nextInt();
-            System.out.print("Entrez le facteur de productivité : ");
-            double productivityFactor = prompt.nextDouble();
-            prompt.nextLine();
+            String laborType = Validator.validateInput("Entrez le type de main-d'œuvre : ", InputType.STRING);
+            String vatRateStr = Validator.validateInput("Entrez le taux de TVA du matériau : ", InputType.DOUBLE);
+            double vatRate = Double.parseDouble(vatRateStr);
+            String hourlyRateStr = Validator.validateInput("Entrez le taux horaire de cette main-d'œuvre : ", InputType.DOUBLE);
+            double hourlyRate = Double.parseDouble(hourlyRateStr);
+            String hoursWorkedStr = Validator.validateInput("Entrez le nombre d'heures travaillées : ", InputType.INTEGER);
+            int hoursWorked = Integer.parseInt(hoursWorkedStr);
+            String productivityFactorStr = Validator.validateInput("Entrez le facteur de productivité : ", InputType.DOUBLE);
+            double productivityFactor = Double.parseDouble(productivityFactorStr);
 
             Labor labor = new Labor(laborType, vatRate, projectId, hourlyRate, hoursWorked, productivityFactor);
             laborService.addLabor(labor);
@@ -190,8 +177,8 @@ public class MainMenu {
 
             logger.info("Labor added: " + laborType + " | Total cost: " + totalCost);
 
-            System.out.print("Voulez-vous ajouter un autre type de main-d'œuvre ? (y/n) : ");
-            if (!prompt.nextLine().equalsIgnoreCase("y")) {
+            String addMore = Validator.validateInput("Voulez-vous ajouter un autre type de main-d'œuvre ? (y/n) : ", InputType.STRING);
+            if (!addMore.equalsIgnoreCase("y")) {
                 break;
             }
         }

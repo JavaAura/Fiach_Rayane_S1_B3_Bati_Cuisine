@@ -1,7 +1,5 @@
 package Utils;
 
-
-
 import Utils.Enums.InputType;
 
 import java.util.List;
@@ -9,47 +7,30 @@ import java.util.Scanner;
 
 public class Validator {
 
-
+    // Utility validation methods (No need to print error messages here)
 
     public static boolean isEmpty(String str) {
-        boolean isEmpty = str.isEmpty();
-        if(isEmpty) System.out.println("\nERROR: Input string cannot be empty\n");
-        return isEmpty;
+        return str.isEmpty();
     }
 
     public static boolean isInteger(String str) {
-        boolean isInteger = str.matches("^[-+]?\\d+$");
-        if(!isInteger) System.out.println("\nERROR: Input integer is not valid\n");
-        return isInteger;
+        return str.matches("^[-+]?\\d+$");
     }
 
     public static boolean isDouble(String str) {
-        boolean isDouble = str.matches("^[+-]?([0-9]*[.])?[0-9]+$");
-        if(!isDouble) System.out.println("\nERROR: Input double is not valid\n");
-        return isDouble;
+        return str.matches("^[+-]?([0-9]*[.])?[0-9]+$");
     }
 
     public static boolean isDate(String str) {
-        boolean isDate = str.matches("^\\d{4}-\\d{2}-\\d{2}$");
-        if(!isDate) System.out.println("\nERROR: Input date is not valid\n");
-        return isDate;
+        return str.matches("^\\d{4}-\\d{2}-\\d{2}$");
     }
 
-    public static boolean isWhithinRange(String option, int min, int max) {
-        if(max <= min) return false;
-
-        boolean isWhithinRange = validateInteger(option) >= min && validateInteger(option) <= max;
-        if(!isWhithinRange) System.out.println("\nERROR: Input option is not valid\n");
-        return isWhithinRange;
+    public static boolean isWithinRange(String option, int min, int max) {
+        return validateInteger(option) >= min && validateInteger(option) <= max;
     }
-
 
     public static int validateInteger(String str) {
-        if(isInteger(str)) {
-            return Parser.parseInt(str);
-        }
-
-        return -1;
+        return isInteger(str) ? Integer.parseInt(str) : -1;
     }
 
     public static boolean isValidInput(String input, InputType type, int... range) {
@@ -66,34 +47,38 @@ public class Validator {
                 isValidInput = isDouble(input);
                 break;
             case OPTION:
-                isValidInput = isWhithinRange(input, range[0], range[1]) && isInteger(input);
+                isValidInput = isWithinRange(input, range[0], range[1]) && isInteger(input);
                 break;
             default:
-                isValidInput = !isEmpty(input);;
+                isValidInput = !isEmpty(input);
         }
 
         return isValidInput;
     }
 
-    public static String validateInput(String prompt, InputType type, int... range){
-
+    // Only handle the error display in this method
+    public static String validateInput(String prompt, InputType type, int... range) {
         String input;
         do {
             System.out.print(prompt);
             Scanner scanner = new Scanner(System.in);
             input = scanner.nextLine();
 
-        } while(!isValidInput(input, type, range));
+            // Print error if invalid
+            if (!isValidInput(input, type, range)) {
+                System.out.println("\nERROR: Invalid input. Please try again.\n");
+            }
+
+        } while (!isValidInput(input, type, range));
 
         return input;
     }
 
     public static boolean listIsEmpty(List<?> list) {
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             System.out.println("\nERROR: No data available!\n");
             return true;
         }
-
         return false;
     }
 }
