@@ -19,6 +19,14 @@ public class Project {
         this.customerId = customerId;
     }
 
+    public Project(String projectName, double profitMargin, double totalCost, Status projectStatus, int customerId) {
+        this.projectName = projectName;
+        this.profitMargin = profitMargin;
+        this.totalCost = totalCost;
+        this.projectStatus = projectStatus;
+        this.customerId = customerId;
+    }
+
     public int getId() {
         return id;
     }

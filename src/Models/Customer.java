@@ -16,6 +16,13 @@ public class Customer {
         this.isProfessional = isProfessional;
     }
 
+    public Customer(String name, String address, String phone, boolean isProfessional) {
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.isProfessional = isProfessional;
+    }
+
     public int getId() {return id;}
 
     public String getName() {

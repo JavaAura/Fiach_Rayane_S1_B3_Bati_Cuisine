@@ -88,7 +88,7 @@ public class MainMenu {
             System.out.print("Entrez le nom du projet : ");
             String projectName = prompt.nextLine();
 
-            Project project = new Project(0, projectName, 0, 0, Status.ONGOING, selectedCustomer.getId());
+            Project project = new Project(projectName, 0, 0, Status.ONGOING, selectedCustomer.getId());
             projectService.addProject(project);
             addMaterialsAndLabor(prompt, project);
 
@@ -130,7 +130,7 @@ public class MainMenu {
         boolean isProfessional = prompt.nextBoolean();
         prompt.nextLine();
 
-        Customer newCustomer = new Customer(0, name, address, phone, isProfessional);
+        Customer newCustomer = new Customer(name, address, phone, isProfessional);
         customerService.addCustomer(newCustomer);
         logger.info("New customer added: " + name);
         System.out.println("Client ajouté avec succès !");
