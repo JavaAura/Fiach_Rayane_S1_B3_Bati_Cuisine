@@ -87,7 +87,6 @@ public class MainMenu {
             System.out.println("--- Création d'un Nouveau Projet ---");
             System.out.print("Entrez le nom du projet : ");
             String projectName = prompt.nextLine();
-
             Project project = new Project(projectName, 0, 0, Status.ONGOING, selectedCustomer.getId());
             projectService.addProject(project);
             addMaterialsAndLabor(prompt, project);
@@ -198,7 +197,6 @@ public class MainMenu {
         }
 
         project.setTotalCost(totalCost);
-        projectService.addProject(project);
 
         System.out.println("Projet ajouté avec succès avec le coût total : " + totalCost);
     }

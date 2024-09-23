@@ -23,13 +23,23 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Override
     public void addProject(Project project) {
         String query = "INSERT INTO project (projectName, profitMargin, totalCost, projectStatus, customerId) VALUES (?, ?, ?, ?::status, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, project.getProjectName());
             stmt.setDouble(2, project.getProfitMargin());
             stmt.setDouble(3, project.getTotalCost());
             stmt.setString(4, project.getProjectStatus().name());
             stmt.setInt(5, project.getCustomerId());
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        project.setId(generatedKeys.getInt(1));
+                    } else {
+                        throw new SQLException("Failed to obtain the project ID.");
+                    }
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
