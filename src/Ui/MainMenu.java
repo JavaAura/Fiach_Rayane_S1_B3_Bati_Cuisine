@@ -212,6 +212,7 @@ public class MainMenu {
         System.out.println("1. Crée un devis");
         System.out.println("2. Annuler un devis");
         System.out.println("3. Accepter un devis");
+        System.out.println("4. Go back");
         int option = prompt.nextInt();
         switch(option){
             case 1:
@@ -220,9 +221,13 @@ public class MainMenu {
             case 2:
                 denyQuote(prompt);
                 break;
+            case 3:
+                acceptQuote(prompt);
+                break;
+            case 4:
+                return;
             default:
-                logger.warning("Invalid option selected: " + option);
-                System.out.println("Option invalide, veuillez réessayer.");
+                System.out.println("Invalid option");
         }
     }
 
@@ -326,6 +331,31 @@ public class MainMenu {
         if (response.equalsIgnoreCase("y")) {
             quoteService.updateQuoteStatus(project.getId(), false);
             project.setProjectStatus(Status.CANCELLED);
+            projectService.updateProject(project);
+            System.out.println("Le devis a été rejeté avec succès.");
+        } else {
+            System.out.println("Action annulée. Le devis n'a pas été rejeté.");
+        }
+    }
+
+    private void acceptQuote(Scanner prompt) {
+        System.out.println("--- Recherche de Devis à Accepter ---");
+        String projectName = Validator.validateInput("Entrez le nom du projet pour trouver le devis : ", InputType.STRING);
+        Project project = projectService.getProjectByName(projectName);
+
+        if (project  == null) {
+            System.out.println("Devis non trouvé pour le projet : " + projectName);
+            return;
+        }
+
+
+        System.out.println("Devis trouvé pour le projet : " + projectName);
+        prompt.nextLine();
+        System.out.println("Voulez-vous vraiment accepter ce devis ? (y/n) : ");
+        String response = prompt.nextLine();
+        if (response.equalsIgnoreCase("y")) {
+            quoteService.updateQuoteStatus(project.getId(), true);
+            project.setProjectStatus(Status.DONE);
             projectService.updateProject(project);
             System.out.println("Le devis a été rejeté avec succès.");
         } else {
