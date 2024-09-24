@@ -7,4 +7,5 @@ import java.util.List;
 public interface LaborRepository {
     void addLabor(Labor labor);
     List<Labor> getAllLabors();
+    List<Labor> getLaborById(int projectId);
 }

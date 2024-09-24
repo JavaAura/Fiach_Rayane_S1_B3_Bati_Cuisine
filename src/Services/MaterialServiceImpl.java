@@ -25,4 +25,9 @@ public class MaterialServiceImpl implements MaterialService {
     public List<Material> getAllMaterials() {
         return materialRepository.getAllMaterials();
     }
+
+    @Override
+    public List <Material> getMaterialById(int projectId) {
+        return materialRepository.getMaterialById(projectId);
+    }
 }

@@ -60,5 +60,31 @@ public class MaterialRepositoryImpl implements MaterialRepository {
         return materials;
     }
 
+    public List<Material> getMaterialById(int projectId) {
+        List<Material> materials = new ArrayList<>();
+        String query = "SELECT * FROM material WHERE projectId = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, projectId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Material material = new Material(
+                        rs.getString("name"),
+                        rs.getDouble("vatRate"),
+                        rs.getInt("projectId"),
+                        rs.getDouble("quantity"),
+                        rs.getDouble("unitCost"),
+                        rs.getDouble("transportCost"),
+                        rs.getDouble("qualityCoefficient")
+                );
+                materials.add(material);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return materials;
+    }
+
 
 }

@@ -24,4 +24,10 @@ public class LaborServiceImpl implements LaborService {
         return laborRepository.getAllLabors();
     }
 
+    @Override
+    public List<Labor> getLaborById(int projectId){
+        return laborRepository.getLaborById(projectId);
+
+    }
+
 }

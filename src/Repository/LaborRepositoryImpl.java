@@ -57,4 +57,28 @@ public class LaborRepositoryImpl implements LaborRepository {
         return labors;
     }
 
+    @Override
+    public List<Labor> getLaborById(int projectId){
+        List<Labor> labors = new ArrayList<>();
+        String query = "SELECT * FROM labor where projectId = ?";
+        try(PreparedStatement pstmt = connection.prepareStatement(query)){
+            pstmt.setInt(1, projectId);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+                Labor labor = new Labor(
+                        rs.getString("name"),
+                        rs.getDouble("vatRate"),
+                        rs.getInt("projectId"),
+                        rs.getDouble("hourlyRate"),
+                        rs.getDouble("workHours"),
+                        rs.getDouble("workersProductivity")
+                );
+                labors.add(labor);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return labors;
+    }
+
 }

@@ -7,4 +7,6 @@ import java.util.List;
 public interface MaterialService {
     void addMaterial(Material material);
     List<Material> getAllMaterials();
+    List <Material> getMaterialById(int projectId);
+
 }

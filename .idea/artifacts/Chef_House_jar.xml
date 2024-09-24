@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Chef_House:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Chef_House_jar</output-path>
+    <root id="archive" name="Chef_House.jar">
+      <element id="module-output" name="Chef_House" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/postgresql-42.7.4.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -7,4 +7,5 @@ import java.util.List;
 public interface MaterialRepository {
     void addMaterial(Material material);
     List<Material> getAllMaterials();
+    List <Material> getMaterialById(int id);
 }

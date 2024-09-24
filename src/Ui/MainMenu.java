@@ -219,6 +219,10 @@ public class MainMenu {
             System.out.println("Projet non trouvé avec le nom : " + projectName);
             return;
         }
+
+        List<Material> materials = materialService.getMaterialById(project.getId());
+        List<Labor> labors = laborService.getLaborById(project.getId());
+
         System.out.println("--- Détails du Projet ---");
         System.out.println(project);
         double totalCost = project.getTotalCost();
