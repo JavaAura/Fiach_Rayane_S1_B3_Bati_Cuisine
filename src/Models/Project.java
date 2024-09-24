@@ -1,6 +1,6 @@
 package Models;
 
-import Enum.Status;
+import Models.Enum.Status;
 
 public class Project {
     private int id;

@@ -1,4 +1,4 @@
-package Enum;
+package Models.Enum;
 
 public enum Status {
     ONGOING,

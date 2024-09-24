@@ -2,7 +2,7 @@ package Ui;
 
 import Models.*;
 import Services.*;
-import Enum.Status;
+import Models.Enum.Status;
 import Utils.Validator;
 import Utils.Enums.InputType;
 

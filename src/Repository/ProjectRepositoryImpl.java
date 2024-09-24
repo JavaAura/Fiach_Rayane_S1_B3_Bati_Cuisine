@@ -3,7 +3,7 @@ package Repository;
 import Config.DbConnection;
 import Models.Project;
 import Repository.Interfaces.ProjectRepository;
-import Enum.Status;
+import Models.Enum.Status;
 
 import java.sql.*;
 import java.util.ArrayList;
