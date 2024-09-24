@@ -4,10 +4,7 @@ import Models.Customer;
 import Models.Project;
 import Models.Labor;
 import Models.Material;
-import Services.CustomerServiceImpl;
-import Services.LaborServiceImpl;
-import Services.MaterialServiceImpl;
-import Services.ProjectServiceImpl;
+import Services.*;
 import Enum.Status;
 import Utils.Validator;
 import Utils.Enums.InputType;
@@ -21,6 +18,7 @@ public class MainMenu {
     private ProjectServiceImpl projectService;
     private MaterialServiceImpl materialService;
     private LaborServiceImpl laborService;
+    private QuoteServiceImpl quoteService;
     private static final Logger logger = Logger.getLogger(MainMenu.class.getName());
 
     public MainMenu() {
@@ -28,6 +26,7 @@ public class MainMenu {
         this.projectService = new ProjectServiceImpl();
         this.materialService = new MaterialServiceImpl();
         this.laborService = new LaborServiceImpl();
+        this.quoteService = new QuoteServiceImpl();
     }
 
     public void mainMenu() {
@@ -285,6 +284,7 @@ public class MainMenu {
 
         // Save quote if user confirms
         if (saveQuote.equalsIgnoreCase("y")) {
+            quoteService.addQuote(project.getId(), emissionDate, validityDate, totalCostWithMargin);
             System.out.println("Devis enregistré avec succès !");
             logger.info("Quote saved for project: " + project.getProjectName());
         } else {
