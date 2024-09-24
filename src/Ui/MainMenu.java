@@ -49,7 +49,7 @@ public class MainMenu {
                     displayProjects();
                     break;
                 case 3:
-                    quoteGenerating(prompt);
+                    generateQuote();
                     break;
                 case 4:
                     logger.info("Application terminated by user.");
@@ -163,7 +163,7 @@ public class MainMenu {
             double vatRate = Double.parseDouble(vatRateStr);
             String hourlyRateStr = Validator.validateInput("Entrez le taux horaire de cette main-d'œuvre : ", InputType.DOUBLE);
             double hourlyRate = Double.parseDouble(hourlyRateStr);
-            String hoursWorkedStr = Validator.validateInput("Entrez le nombre d'heures travaillées : ", InputType.INTEGER);
+            String hoursWorkedStr = Validator.validateInput("Entrez le nombre d'heures travaillées : ", InputType.DOUBLE);
             int hoursWorked = Integer.parseInt(hoursWorkedStr);
             String productivityFactorStr = Validator.validateInput("Entrez le facteur de productivité : ", InputType.DOUBLE);
             double productivityFactor = Double.parseDouble(productivityFactorStr);
@@ -211,67 +211,85 @@ public class MainMenu {
         logger.info("Displayed all projects.");
     }
 
-    public void quoteGenerating(Scanner prompt){
-        System.out.println("--- Recherche de Project ---");
-        String projectName = Validator.validateInput("Entrez le nom du project", InputType.STRING);
+    private void generateQuote() {
+        System.out.println("--- Génération de Devis ---");
+
+        // Prompt for project name
+        String projectName = Validator.validateInput("Entrez le nom du projet : ", InputType.STRING);
+
+        // Retrieve the project
         Project project = projectService.getProjectByName(projectName);
         if (project == null) {
             System.out.println("Projet non trouvé avec le nom : " + projectName);
             return;
         }
 
+        // Get materials and labors for the project
         List<Material> materials = materialService.getMaterialById(project.getId());
         List<Labor> labors = laborService.getLaborById(project.getId());
 
+        // Calculate costs
+        double[] materialCosts = materialService.calculateMaterialCosts(materials);
+        double[] laborCosts = laborService.calculateLaborCosts(labors);
+        double totalCostBeforeMargin = materialCosts[0] + laborCosts[0];
+        double profitMargin = project.getProfitMargin();
+
+        double totalCostWithVat = materialCosts[1] + laborCosts[1];
+
+        // Calculate total cost with margin and include VAT
+        double totalCostWithMargin = totalCostWithVat +(  totalCostWithVat * (profitMargin / 100));
+        System.out.println("totalCostWithMarginBeforeVAT");
+
+
+
+        // Retrieve customer details
         Customer customer = customerService.getCustomerByProjectId(project.getCustomerId());
-        System.out.println("Detail du client");
+
+        // Display the formatted result
+        System.out.println("--- Résultat du Calcul ---");
+        System.out.println("Nom du projet : " + project.getProjectName());
         System.out.println("Client : " + customer.getName());
-        System.out.println("Addresse du client : " + customer.getAddress());
-        System.out.println("Téléphone du client : " + customer.getPhone());
-        String profesional = null;
-        if(customer.getIsProfessional() == true){
-            profesional = "Professional";
-        }else{
-            profesional = "Régulier";
+        System.out.println("Adresse du chantier : " + customer.getAddress());
+
+        System.out.println("\n--- Détail des Coûts ---");
+
+        // Display Material Costs
+        System.out.println("1. Matériaux :");
+        for (Material material : materials) {
+            System.out.printf("- %s : %.2f € (quantité : %.2f, coût unitaire : %.2f €, qualité : %.2f, transport : %.2f €)%n",
+                    material.getName(), material.getTotalCost(), material.getQuantity(),
+                    material.getUnitCost(), material.getQualityCoefficient(), material.getTransportCost());
         }
-        System.out.println("Type du client :" + profesional);
+        System.out.printf("**Coût total des matériaux avant TVA : %.2f €**%n", materialCosts[0]);
+        System.out.printf("**Coût total des matériaux avec TVA : %.2f €**%n", materialCosts[1]);
 
+        // Display Labor Costs
+        System.out.println("2. Main-d'œuvre :");
+        for (Labor labor : labors) {
+            System.out.printf("- %s : %.2f € (taux horaire : %.2f €/h, heures travaillées : %2f h, productivité : %.2f)%n",
+                    labor.getName(), labor.getTotalCost(), labor.getHourlyRate(),
+                    labor.getWorkHours(), labor.getWorkerProductivity());
+        }
+        System.out.printf("**Coût total de la main-d'œuvre avant TVA : %.2f €**%n", laborCosts[0]);
+        System.out.printf("**Coût total de la main-d'œuvre avec TVA  : %.2f €**%n", laborCosts[1]);
 
-        System.out.println("--- Détails du Projet ---");
-        System.out.println(project);
-        System.out.println("Nom du project : " + project.getProjectName());
-        System.out.println("Marge de profit : " + project.getProfitMargin());
-        System.out.println("Status du project" + project.getProjectStatus());
+        // Display Total Costs including VAT
+        System.out.printf("3. Coût total avant marge : %.2f€%n", totalCostWithVat);
+        System.out.println("4. Marge bénéficiaire : " + profitMargin +"%");
+        System.out.printf("**Coût total final du projet (avec TVA) : %.2f €**%n", totalCostWithMargin);
 
+        // Prompt for quote details
+        String emissionDate = Validator.validateInput("Entrez la date d'émission du devis (format : jj/mm/aaaa) : ", InputType.STRING);
+        String validityDate = Validator.validateInput("Entrez la date de validité du devis (format : jj/mm/aaaa) : ", InputType.STRING);
+        String saveQuote = Validator.validateInput("Souhaitez-vous enregistrer le devis ? (y/n) : ", InputType.STRING);
 
-        System.out.println("--- Matériaux ---");
-        if (materials.isEmpty()) {
-            System.out.println("Aucun matériau trouvé pour ce projet.");
+        // Save quote if user confirms
+        if (saveQuote.equalsIgnoreCase("y")) {
+            System.out.println("Devis enregistré avec succès !");
+            logger.info("Quote saved for project: " + project.getProjectName());
         } else {
-            for (Material material : materials) {
-                System.out.println("Material : " + material.getName());
-                System.out.println("Taux TVA : " + material.getVatRate());
-                System.out.println("Prix unité : " + material.getUnitCost());
-                System.out.println("Quantite : " + material.getQuantity());
-                System.out.println("Cout de transport : " + material.getTransportCost());
-                System.out.println("Coefficient de qualité : " + material.getQualityCoefficient());
-            }
+            System.out.println("Devis non enregistré.");
         }
-
-        System.out.println("--- Main-d'œuvre ---");
-        if (labors.isEmpty()) {
-            System.out.println("Aucune main-d'œuvre trouvée pour ce projet.");
-        } else {
-            for (Labor labor : labors) {
-                System.out.println("Nom : " + labor.getName());
-                System.out.println("Taux TVA : " + labor.getVatRate());
-                System.out.println("Taux par heure : " + labor.getHourlyRate());
-                System.out.println("Heure de travail : " + labor.getWorkHours());
-                System.out.println("Productivité : " + labor.getWorkerProductivity());
-            }
-        }
-
-
     }
 
 

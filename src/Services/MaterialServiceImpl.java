@@ -35,9 +35,15 @@ public class MaterialServiceImpl implements MaterialService {
         double totalCostBeforeVAT = 0.0;
         double totalCostWithVAT = 0.0;
 
+        if (materials == null || materials.isEmpty()) {
+            return new double[]{totalCostBeforeVAT, totalCostWithVAT}; // Return zeros if no materials
+        }
+
         for (Material material : materials) {
             double totalCost = material.getTotalCost();
             totalCostBeforeVAT += totalCost;
+
+            // Calculate VAT
             double vatCost = totalCost * (material.getVatRate() / 100);
             totalCostWithVAT += totalCost + vatCost;
         }

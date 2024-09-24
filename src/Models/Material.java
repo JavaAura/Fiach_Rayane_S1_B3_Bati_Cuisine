@@ -59,6 +59,7 @@ public class Material extends Component{
     }
 
     public double getTotalCost(){
-        return this.getVatRate() * this.unitCost * this.quantity * this.qualityCoefficient + this.transportCost;
+        double total = this.unitCost * this.quantity * this.qualityCoefficient + this.transportCost;
+        return total + (total * (this.getVatRate() / 100));
     }
 }

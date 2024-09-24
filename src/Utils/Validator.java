@@ -2,11 +2,13 @@ package Utils;
 
 import Utils.Enums.InputType;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
 public class Validator {
 
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Set default format
 
     public static boolean isEmpty(String str) {
         return str.isEmpty();
@@ -20,8 +22,9 @@ public class Validator {
         return str.matches("^[+-]?([0-9]*[.])?[0-9]+$");
     }
 
+    // Use Parser to check if date is valid
     public static boolean isDate(String str) {
-        return str.matches("^\\d{4}-\\d{2}-\\d{2}$");
+        return Parser.parseDate(str, DATE_FORMATTER) != null; // returns true if date can be parsed
     }
 
     public static boolean isWithinRange(String option, int min, int max) {

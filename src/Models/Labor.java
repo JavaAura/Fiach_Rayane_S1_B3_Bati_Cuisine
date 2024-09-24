@@ -48,6 +48,7 @@ public class Labor extends Component{
     }
 
     public double getTotalCost(){
-        return this.getVatRate() * this.hourlyRate * this.workHours * this.workerProductivity;
+        double total = this.hourlyRate * this.workHours * this.workerProductivity;
+        return total + (total * (this.getVatRate() / 100));
     }
 }

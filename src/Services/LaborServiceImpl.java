@@ -34,9 +34,15 @@ public class LaborServiceImpl implements LaborService {
         double totalCostBeforeVAT = 0.0;
         double totalCostWithVAT = 0.0;
 
+        if (labors == null || labors.isEmpty()) {
+            return new double[]{totalCostBeforeVAT, totalCostWithVAT}; // Return zeros if no labors
+        }
+
         for (Labor labor : labors) {
             double laborCost = labor.getTotalCost();
             totalCostBeforeVAT += laborCost;
+
+            // Calculate VAT
             double laborVatCost = laborCost * (labor.getVatRate() / 100);
             totalCostWithVAT += laborCost + laborVatCost;
         }
