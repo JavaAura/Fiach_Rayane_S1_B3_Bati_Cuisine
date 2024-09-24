@@ -30,4 +30,18 @@ public class MaterialServiceImpl implements MaterialService {
     public List <Material> getMaterialById(int projectId) {
         return materialRepository.getMaterialById(projectId);
     }
+
+    public double[] calculateMaterialCosts(List<Material> materials) {
+        double totalCostBeforeVAT = 0.0;
+        double totalCostWithVAT = 0.0;
+
+        for (Material material : materials) {
+            double totalCost = material.getTotalCost();
+            totalCostBeforeVAT += totalCost;
+            double vatCost = totalCost * (material.getVatRate() / 100);
+            totalCostWithVAT += totalCost + vatCost;
+        }
+
+        return new double[]{totalCostBeforeVAT, totalCostWithVAT};
+    }
 }

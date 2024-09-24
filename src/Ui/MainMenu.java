@@ -223,9 +223,53 @@ public class MainMenu {
         List<Material> materials = materialService.getMaterialById(project.getId());
         List<Labor> labors = laborService.getLaborById(project.getId());
 
+        Customer customer = customerService.getCustomerByProjectId(project.getCustomerId());
+        System.out.println("Detail du client");
+        System.out.println("Client : " + customer.getName());
+        System.out.println("Addresse du client : " + customer.getAddress());
+        System.out.println("Téléphone du client : " + customer.getPhone());
+        String profesional = null;
+        if(customer.getIsProfessional() == true){
+            profesional = "Professional";
+        }else{
+            profesional = "Régulier";
+        }
+        System.out.println("Type du client :" + profesional);
+
+
         System.out.println("--- Détails du Projet ---");
         System.out.println(project);
-        double totalCost = project.getTotalCost();
+        System.out.println("Nom du project : " + project.getProjectName());
+        System.out.println("Marge de profit : " + project.getProfitMargin());
+        System.out.println("Status du project" + project.getProjectStatus());
+
+
+        System.out.println("--- Matériaux ---");
+        if (materials.isEmpty()) {
+            System.out.println("Aucun matériau trouvé pour ce projet.");
+        } else {
+            for (Material material : materials) {
+                System.out.println("Material : " + material.getName());
+                System.out.println("Taux TVA : " + material.getVatRate());
+                System.out.println("Prix unité : " + material.getUnitCost());
+                System.out.println("Quantite : " + material.getQuantity());
+                System.out.println("Cout de transport : " + material.getTransportCost());
+                System.out.println("Coefficient de qualité : " + material.getQualityCoefficient());
+            }
+        }
+
+        System.out.println("--- Main-d'œuvre ---");
+        if (labors.isEmpty()) {
+            System.out.println("Aucune main-d'œuvre trouvée pour ce projet.");
+        } else {
+            for (Labor labor : labors) {
+                System.out.println("Nom : " + labor.getName());
+                System.out.println("Taux TVA : " + labor.getVatRate());
+                System.out.println("Taux par heure : " + labor.getHourlyRate());
+                System.out.println("Heure de travail : " + labor.getWorkHours());
+                System.out.println("Productivité : " + labor.getWorkerProductivity());
+            }
+        }
 
 
     }

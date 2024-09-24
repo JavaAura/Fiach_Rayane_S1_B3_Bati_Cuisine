@@ -28,4 +28,8 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> getAllCustomers() {
         return customerRepository.getAllCustomers();
     }
+    @Override
+    public Customer getCustomerByProjectId(int projectId) {
+        return customerRepository.getCustomerByProjectId(projectId);
+    }
 }

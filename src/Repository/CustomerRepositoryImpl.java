@@ -64,6 +64,26 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    public Customer getCustomerByProjectId(int projectId) {
+        String query = "SELECT * FROM customer WHERE id = ?";
+        try(PreparedStatement stmt = connection.prepareStatement(query)){
+            stmt.setInt(1, projectId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Customer(
+                        rs.getString("name"),
+                        rs.getString("address"),
+                        rs.getString("phone"),
+                        rs.getBoolean("isProfessional")
+                );
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
         String query = "SELECT * FROM customer";

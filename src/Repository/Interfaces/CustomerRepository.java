@@ -7,5 +7,6 @@ public interface CustomerRepository {
     void addCustomer(Customer customer);
     Customer getCustomerByName(String customerName);
     List<Customer> getAllCustomers();
+    Customer getCustomerByProjectId(int projectId);
 
 }
