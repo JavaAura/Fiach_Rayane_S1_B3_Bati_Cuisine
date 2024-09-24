@@ -49,7 +49,7 @@ public class MainMenu {
                     displayProjects();
                     break;
                 case 3:
-                    System.out.println("Fonctionnalité non implémentée.");
+                    quoteGenerating(prompt);
                     break;
                 case 4:
                     logger.info("Application terminated by user.");
@@ -94,10 +94,8 @@ public class MainMenu {
 
     private Customer searchExistingCustomer(Scanner prompt) {
         String customerName = Validator.validateInput("Entrez le nom du client : ", InputType.STRING);
-        List<Customer> customers = customerService.getAllCustomers();
-
-        for (Customer customer : customers) {
-            if (customer.getName().equalsIgnoreCase(customerName)) {
+        Customer customer = customerService.getCustomerByName(customerName);
+            if (customer != null) {
                 System.out.println("Client trouvé !");
                 System.out.println("Nom : " + customer.getName());
                 System.out.println("Adresse : " + customer.getAddress());
@@ -107,7 +105,6 @@ public class MainMenu {
                     logger.info("Existing customer selected: " + customer.getName());
                     return customer;
                 }
-            }
         }
         logger.warning("Customer not found: " + customerName);
         System.out.println("Client non trouvé.");
@@ -213,4 +210,21 @@ public class MainMenu {
         }
         logger.info("Displayed all projects.");
     }
+
+    public void quoteGenerating(Scanner prompt){
+        System.out.println("--- Recherche de Project ---");
+        String projectName = Validator.validateInput("Entrez le nom du project", InputType.STRING);
+        Project project = projectService.getProjectByName(projectName);
+        if (project == null) {
+            System.out.println("Projet non trouvé avec le nom : " + projectName);
+            return;
+        }
+        System.out.println("--- Détails du Projet ---");
+        System.out.println(project);
+        double totalCost = project.getTotalCost();
+
+
+    }
+
+
 }

@@ -25,6 +25,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Project getProjectByName(String projectName){
+        return projectRepository.getProjectByName(projectName);
+    }
+
+    @Override
     public List<Project> getAllProjects() {
         return projectRepository.getAllProjects();
     }

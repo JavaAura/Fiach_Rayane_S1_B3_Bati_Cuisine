@@ -83,7 +83,24 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Project getProjectById(int id) {
+    public Project getProjectByName(String projectName) {
+        String query = "SELECT * FROM project WHERE projectName = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, projectName);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Project(
+                        rs.getInt("id"),
+                        rs.getString("projectName"),
+                        rs.getDouble("profitMargin"),
+                        rs.getDouble("totalCost"),
+                        Status.valueOf(rs.getString("projectStatus")),
+                        rs.getInt("customerId")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

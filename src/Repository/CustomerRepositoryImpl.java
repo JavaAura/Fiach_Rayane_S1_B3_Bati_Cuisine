@@ -43,10 +43,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    public Customer getCustomerById(int id) {
-        String query = "SELECT * FROM customer WHERE id = ?";
+    public Customer getCustomerByName(String customerName) {
+        String query = "SELECT * FROM customer WHERE name = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, id);
+            stmt.setString(1, customerName);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new Customer(

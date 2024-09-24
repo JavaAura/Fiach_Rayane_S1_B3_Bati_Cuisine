@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface CustomerRepository {
     void addCustomer(Customer customer);
-    Customer getCustomerById(int id);
+    Customer getCustomerByName(String customerName);
     List<Customer> getAllCustomers();
 
 }
