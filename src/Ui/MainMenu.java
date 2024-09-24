@@ -1,9 +1,6 @@
 package Ui;
 
-import Models.Customer;
-import Models.Project;
-import Models.Labor;
-import Models.Material;
+import Models.*;
 import Services.*;
 import Enum.Status;
 import Utils.Validator;
@@ -48,7 +45,7 @@ public class MainMenu {
                     displayProjects();
                     break;
                 case 3:
-                    generateQuote();
+                    devisManu(prompt);
                     break;
                 case 4:
                     logger.info("Application terminated by user.");
@@ -210,6 +207,25 @@ public class MainMenu {
         logger.info("Displayed all projects.");
     }
 
+    public void devisManu(Scanner prompt){
+        System.out.println("--- Devi Menu ---");
+        System.out.println("1. Crée un devis");
+        System.out.println("2. Annuler un devis");
+        System.out.println("3. Accepter un devis");
+        int option = prompt.nextInt();
+        switch(option){
+            case 1:
+                generateQuote();
+                break;
+            case 2:
+                denyQuote(prompt);
+                break;
+            default:
+                logger.warning("Invalid option selected: " + option);
+                System.out.println("Option invalide, veuillez réessayer.");
+        }
+    }
+
     private void generateQuote() {
         System.out.println("--- Génération de Devis ---");
 
@@ -291,6 +307,32 @@ public class MainMenu {
             System.out.println("Devis non enregistré.");
         }
     }
+
+    private void denyQuote(Scanner prompt) {
+        System.out.println("--- Recherche de Devis à Rejeter ---");
+        String projectName = Validator.validateInput("Entrez le nom du projet pour trouver le devis : ", InputType.STRING);
+        Project project = projectService.getProjectByName(projectName);
+
+        if (project  == null) {
+            System.out.println("Devis non trouvé pour le projet : " + projectName);
+            return;
+        }
+
+
+        System.out.println("Devis trouvé pour le projet : " + projectName);
+        prompt.nextLine();
+        System.out.println("Voulez-vous vraiment rejeter ce devis ? (y/n) : ");
+        String response = prompt.nextLine();
+        if (response.equalsIgnoreCase("y")) {
+            quoteService.updateQuoteStatus(project.getId(), false);
+            project.setProjectStatus(Status.CANCELLED);
+            projectService.updateProject(project);
+            System.out.println("Le devis a été rejeté avec succès.");
+        } else {
+            System.out.println("Action annulée. Le devis n'a pas été rejeté.");
+        }
+    }
+
 
 
 }

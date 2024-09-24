@@ -17,6 +17,12 @@ public class Quote {
         this.projectId = projectId;
     }
 
+    public Quote(double estimatedAmount, Date emissionDate, Date validityDate, int projectId) {
+        this.estimatedAmount = estimatedAmount;
+        this.emissionDate = emissionDate;
+        this.validityDate = validityDate;
+        this.projectId = projectId;
+    }
     public double getEstimatedAmount() {
         return estimatedAmount;
     }

@@ -33,4 +33,5 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> getAllProjects() {
         return projectRepository.getAllProjects();
     }
+
 }

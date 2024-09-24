@@ -21,13 +21,12 @@ public class QuoteRepositoryImpl implements QuoteRepository {
 
     @Override
     public void addQuote(Quote quote) {
-        String query = "INSERT INTO quote (estimatedAmount, emissionDate, validityDate, accepted, projectId) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO quote (estimatedAmount, emissionDate, validityDate, projectId) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setDouble(1, quote.getEstimatedAmount());
             stmt.setDate(2, new java.sql.Date(quote.getEmissionDate().getTime()));
             stmt.setDate(3, new java.sql.Date(quote.getValidityDate().getTime()));
-            stmt.setBoolean(4, quote.isAccepted());
-            stmt.setInt(5, quote.getProjectId());
+            stmt.setInt(4, quote.getProjectId());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
@@ -44,5 +43,15 @@ public class QuoteRepositoryImpl implements QuoteRepository {
         }
     }
 
-
+    @Override
+    public void updateQuoteStatus(int projectId, boolean status) {
+        String query = "UPDATE quote SET accepted = ? WHERE projectId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setBoolean(1, status);
+            stmt.setInt(2, projectId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
