@@ -144,7 +144,7 @@ public class MainMenu {
             materialService.addMaterial(material);
             totalCost += material.getTotalCost();
 
-            logger.info("Material added: " + materialName + " | Total cost: " + totalCost);
+            logger.info("Material added: " + materialName );
 
             String addMore = Validator.validateInput("Voulez-vous ajouter un autre matériau ? (y/n) : ", InputType.STRING);
             if (!addMore.equalsIgnoreCase("y")) {
