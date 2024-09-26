@@ -186,7 +186,6 @@ public class MainMenu {
 
             double finalCost = totalCost + (totalCost * (profitMargin / 100));
             project.setTotalCost(finalCost);
-            System.out.println("Coût total final avec marge bénéficiaire : " + finalCost);
         } else {
             System.out.println("Projet ajouté avec succès avec le coût total : " + totalCost);
         }
