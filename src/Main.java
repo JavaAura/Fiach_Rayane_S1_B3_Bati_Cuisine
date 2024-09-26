@@ -8,7 +8,7 @@ public class Main {
         try {
             MainMenu mainMenu = new MainMenu();
             mainMenu.mainMenu();
-            DbConnection = DbConnection.getInstance();
+            DbConnection.getInstance();
             System.out.println("Database connection established.");
 
         } catch (SQLException e) {

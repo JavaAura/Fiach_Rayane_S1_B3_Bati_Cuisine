@@ -1,11 +1,13 @@
 package Services;
 
+import Models.Enum.Status;
 import Models.Project;
 import Repository.Interfaces.ProjectRepository;
 import Repository.ProjectRepositoryImpl;
 import Services.Interfaces.ProjectService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProjectServiceImpl implements ProjectService {
     private ProjectRepository projectRepository;
@@ -32,6 +34,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Project> getAllProjects() {
         return projectRepository.getAllProjects();
+    }
+
+    @Override
+    public List<Project> getProjectByStatus(){
+        return getAllProjects().stream().filter(p -> p.getProjectStatus() == Status.DONE).collect(Collectors.toList());
     }
 
 }

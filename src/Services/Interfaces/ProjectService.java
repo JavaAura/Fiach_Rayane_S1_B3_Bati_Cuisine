@@ -8,4 +8,5 @@ public interface ProjectService {
     void updateProject(Project project);
     Project getProjectByName(String projectName);
     List<Project> getAllProjects();
+    List<Project> getProjectByStatus();
 }

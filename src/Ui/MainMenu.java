@@ -194,7 +194,7 @@ public class MainMenu {
         logger.info("Project updated: " + project.getProjectName());    }
 
     private void displayProjects() {
-        List<Project> projects = projectService.getAllProjects();
+        List<Project> projects = projectService.getProjectByStatus();
         if (projects.isEmpty()) {
             System.out.println("Aucun projet trouvé.");
             return;

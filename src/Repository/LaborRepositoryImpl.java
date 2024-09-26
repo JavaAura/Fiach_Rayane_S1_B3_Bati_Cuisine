@@ -48,7 +48,7 @@ public class LaborRepositoryImpl implements LaborRepository {
                         rs.getInt("projectId"),
                         rs.getDouble("hourlyRate"),
                         rs.getDouble("workHours"),
-                        rs.getDouble("workersProductivity")
+                        rs.getDouble("workerProductivity")
                 ));
             }
         }catch(SQLException e){
