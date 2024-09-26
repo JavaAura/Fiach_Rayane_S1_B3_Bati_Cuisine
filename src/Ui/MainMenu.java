@@ -168,7 +168,7 @@ public class MainMenu {
             laborService.addLabor(labor);
             totalCost += labor.getTotalCost();
 
-            logger.info("Labor added: " + laborType + " | Total cost: " + totalCost);
+            logger.info("Labor added: " + laborType );
 
             String addMore = Validator.validateInput("Voulez-vous ajouter un autre type de main-d'œuvre ? (y/n) : ", InputType.STRING);
             if (!addMore.equalsIgnoreCase("y")) {
